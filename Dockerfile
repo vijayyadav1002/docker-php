@@ -1,6 +1,6 @@
 FROM ubuntu:12.04
 
-MAINTAINER Dan Pupius <vijay@admarvel.com>
+MAINTAINER Vijay Yadav <vijayyadav1002@gmail.com>
 
 RUN apt-get update
 #removing below command
@@ -24,15 +24,21 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
-EXPOSE 80
+EXPOSE 9001
+EXPOSE 9020
+
 
 # Copy site into place.
-ADD www /var/www
+#ADD www /var/www
+#COPY map.conf /etc/apache2/sites-available/
+COPY xdebug.ini /etc/php5/apache2/conf.d/
+
 
 # Update the default apache site with the config we created.
-ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
+RUN a2ensite default
+RUN a2enmod rewrite
 # By default, simply start apache.
-CMD /usr/sbin/apache2ctl -D FOREGROUND
+CMD /usr/sbin/apache2ctl start -D FOREGROUND
 
 CMD /bin/bash
